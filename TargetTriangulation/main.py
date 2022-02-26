@@ -24,6 +24,7 @@ from lib import matching
 from lib import checks
 from lib import database
 from lib import read_existing_db
+from lib import ExportColmapCameras
 
 # Define the class to store the triangulated targets in COLMAP as objects
 class target3D:
@@ -148,7 +149,11 @@ with open("lib/project.ini", "a") as ini_file:
 
 # Target triangulation
 os.mkdir("output/bin_outs")
-subprocess.run(["{}/COLMAP.bat".format(config.COLMAP_EXE_PATH), "point_triangulator", "--project_path", "{}/lib/project.ini".format(current_directory)])
+print("***************")
+print(r"{}/COLMAP.bat".format(config.COLMAP_EXE_PATH))
+print(r"{}/lib/project.ini".format(current_directory))
+print("***************")
+subprocess.run([r"{}/COLMAP.bat".format(config.COLMAP_EXE_PATH), "point_triangulator", "--project_path", r"{}/lib/project.ini".format(current_directory)])
 if config.DEBUG == True and config.DEBUG_level == 4:
     quit()
 
@@ -245,6 +250,15 @@ with open("output/outs.txt", "r") as output_file:
     for line in lines:
         line = line.strip()
         print(line)
+
+# Export cameras
+external_cameras_path = "output/txt_outs/images.txt"
+camera_ori = ExportColmapCameras.ExportCameras(external_cameras_path)
+out_file = open("output/cameras_extr.txt", 'w')
+for element in camera_ori:
+    out_file.write(element)
+    out_file.write('\n')
+out_file.close()
 
 ### END
 print('\nEND')

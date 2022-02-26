@@ -39,3 +39,10 @@ Set inputs and options in config.py
 
 ### Notes
 *All images in ./input/imgs must be registered in the sparse model
+
+# Tile_matcher
+
+### Usage
+```
+python tilesGenerator.py --path G:\3DOM\12_sintetic_dataset\DATA\statue_v0.4.3\images --overlapX 30 --overlapY 30 --tileWidth 1000 --tileHeight 1000
+```
