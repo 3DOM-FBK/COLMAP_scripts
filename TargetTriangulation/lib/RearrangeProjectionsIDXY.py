@@ -23,8 +23,8 @@ def RearrangeProjectionsIDXY(path_to_images, path_to_projections, prj_delimiter)
         new_file = open('output/MarkerPrjsCOLMAP/{}.jpg.txt'.format(image[:-4]),'w')
         new_file.write('{} 128\n'.format(file.shape[0]))
         for k in range(0, file.shape[0]):
-            file[k,0] = str(int(file[k,0])*config.image_reduction_factor+config.image_translation_vector_X)
-            file[k,1] = str(int(file[k,1])*config.image_reduction_factor+config.image_translation_vector_Y)
+            file[k,0] = str(float(file[k,0])*config.image_reduction_factor+config.image_translation_vector_X)
+            file[k,1] = str(float(file[k,1])*config.image_reduction_factor+config.image_translation_vector_Y)
             new_file.write('{} {} {} {}\n'.format(file[k,0], file[k,1], '0.000000', '0.000000'))
             
         new_file.close()

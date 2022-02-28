@@ -12,7 +12,7 @@ def ConvertGCPmetashape2colmap(metashape_gcp_folder, output_folder):
     print(data_matrix_values)
     
     for i in range(0, data_matrix_labels.shape[0]):
-        current_image = data_matrix_labels[i, 0]
+        current_image = data_matrix_labels[i, 1]
         files = os.listdir(output_folder)
         if '{}.txt'.format(current_image) not in files: 
             new_file = open('{}/{}.txt'.format(output_folder, current_image),"w")
@@ -20,11 +20,11 @@ def ConvertGCPmetashape2colmap(metashape_gcp_folder, output_folder):
             
     files = os.listdir(output_folder)
     for i in range(0, data_matrix_labels.shape[0]):
-        current_target = data_matrix_labels[i, 1]
-        current_image = data_matrix_labels[i, 0]
+        current_target = data_matrix_labels[i, 0]
+        current_image = data_matrix_labels[i, 1]
         current_image_output_file = '{}/{}.txt'.format(output_folder, current_image)
         file = open(current_image_output_file, 'a')
-        file.write('{},{},{}\n'.format(str(int(current_target[4:])), data_matrix_values[i, 0], data_matrix_values[i, 1]))
+        file.write('{},{},{}\n'.format(str(int(current_target)), data_matrix_values[i, 0], data_matrix_values[i, 1]))
         file.close()
 
 def main():
