@@ -5,13 +5,13 @@
 # Note: Set 0.5 for the image_translation_vector_X and image_translation_vector_Y parameters, when you mark targets with OpenCV or other tools which have the reference system placed in the middle of the first pixel, while COLMAP has the reference system placed in the upper-left corner.
 # GCPs LABEL MUST BE AN INTEGER!!!
 
-COLMAP_EXE_PATH = r"C:/Users/Luscias/Desktop/3DOM/COLMAP/COLMAP_3_6_windows"
-AlignCC_PATH = r"..\AlignCC_for_windows"
+COLMAP_EXE_PATH = r"C:/Users/Luscias/Desktop/3DOM/COLMAP/COLMAP_3_6_windows" # Path to the COLMAP executable
+AlignCC_PATH = r"..\AlignCC_for_windows" # Path to the AlignCC_for_windows folder, this part is usefull if you want automatically compare your script using the Cloud Compare libraries
 #database_path = r".\input\colmap_sparse\database.db"
-image_folder = r"G:\3DOM\13_Imgs_aeree\aerial_trento\Trento_resized_JPG"
-projection_folder = r"G:\3DOM\13_Imgs_aeree\aerial_trento\Equal_coordinates\colmap_projections"
-sparse_model_path = r"G:\3DOM\13_Imgs_aeree\aerial_trento\Equal_coordinates\RootSIFT_F_cx_cy_mtl2_0.8pix_RANSAC_0.5pix\sparse_txt"
-ground_truth_path = r"G:\3DOM\13_Imgs_aeree\aerial_trento\Equal_coordinates\GT_ETRS89_ECEF.txt"
+image_folder = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_aerial_imgs\dortmund\imgs\img_jpg" # Path to the image folder used for running the sparse COLMAP reconstruction
+projection_folder = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_aerial_imgs\dortmund\target_projections_numericID"
+sparse_model_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_aerial_imgs\dortmund\RootSIFT_OPENCV_BA4pix_withPP_mTL2\sparse_withPP"
+ground_truth_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_aerial_imgs\dortmund\GCPs_coordinates_WGS84_UTM_32N_da_metashape_fabio_epsg32632.txt"
 
 image_file_extension = ".jpg"
 projection_delimiter = ","
