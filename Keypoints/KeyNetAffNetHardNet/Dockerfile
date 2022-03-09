@@ -1,3 +1,6 @@
+# Since PIP is not updated you will have to manually install kornia using
+# "python setup.py install" inside kornia-master
+
 FROM pytorch/pytorch
 MAINTAINER lmorelli@fbk.eu
 
