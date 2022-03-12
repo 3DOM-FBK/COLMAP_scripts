@@ -18,7 +18,8 @@ def rearrangeKpts(  img1,
                     desc_folder,
                     colmap_desc_folder,
                     matches_folder,
-                    tile_folder):
+                    tile_folder,
+                    local_feature):
     image_list = os.listdir(image_folder)
     tile_list = os.listdir(tile_folder)
     desc_list = os.listdir(desc_folder)
@@ -36,14 +37,31 @@ def rearrangeKpts(  img1,
             row, col, ox, oy, tw, th = int(row[1:]), int(col[1:]), int(ox[2:]), int(oy[2:]), int(tw[2:]), int(th[2:])
             
             # Import keypoints from file (LFNet format)
-            np_desc_path = Path("{}.npz".format(tile))
-            abs_np_desc_path = desc_folder / np_desc_path
-            with np.load(abs_np_desc_path) as data:
-                d = dict(zip(("keypoints","descriptors","resolution","scale","orientation"), (data[k] for k in data)))
-            kp = d['keypoints']
-            kp_numb = d['keypoints'].shape[0]
-            total_numb_kpts += kp_numb
-            desc = d['descriptors']
+            if local_feature == "LFNet":
+                np_desc_path = Path("{}.npz".format(tile))
+                abs_np_desc_path = desc_folder / np_desc_path
+                with np.load(abs_np_desc_path) as data:
+                    d = dict(zip(("keypoints","descriptors","resolution","scale","orientation"), (data[k] for k in data)))
+                kp = d['keypoints']
+                kp_numb = d['keypoints'].shape[0]
+                total_numb_kpts += kp_numb
+                desc = d['descriptors']
+            
+            elif local_feature == "KeyNet":
+
+                np_kpt_path = Path("{}.kpt.npy".format(tile))
+                abs_np_kpt_path = desc_folder / np_kpt_path
+                np_dsc_path = Path("{}.dsc.npy".format(tile))
+                abs_np_dsc_path = desc_folder / np_dsc_path
+
+                kp = np.load(abs_np_kpt_path)
+                desc = np.load(abs_np_dsc_path)
+                kp_numb = kp.shape[0]
+                total_numb_kpts += kp_numb
+
+            else:
+                print("Invalid local_feature parameter. Exit.")
+                quit()
             
             # Translate keypoints coordinates
             translated_kpts = np.empty((kp_numb,2), dtype=float)

@@ -9,7 +9,7 @@ from kornia_moons.feature import *
 import os
 
 device=torch.device('cpu') # 'cpu' or 'cuda'
-N_keypoints = 8000
+N_keypoints = 198
 images_folder = r"./imgs_sample"
 output_folder = r"./outs"
 
