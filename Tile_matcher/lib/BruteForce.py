@@ -21,8 +21,13 @@ def ShowMatches(img1, kp1, img2, kp2, matches, nmatches = 100000):
 # Brute-Force openCV2
 def BrForce(des1, des2, check, matching_distance, crossCheck_bool, matching_strategy, print_debug = True, ratio_thresh=0.8):
     if check == 'without_Lowe_ratio_test' and matching_distance=='L2':
-        print('Ratio Treshold: {}'.format(ratio_thresh))
         bf = cv2.BFMatcher(cv2.NORM_L2, crossCheck=crossCheck_bool)
+        print(des1)
+        print(des2)
+        print(type(des1))
+        print(type(des2))
+        print(des1.shape)
+        print(des2.shape)
         matches = bf.match(des1,des2)
         #matches = sorted(matches, key = lambda x: x.distance)   # Sort matches by distance.  Best come first.
 

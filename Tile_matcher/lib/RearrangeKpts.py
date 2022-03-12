@@ -36,7 +36,7 @@ def rearrangeKpts(  img1,
             row, col, ox, oy, tw, th = tile_info.split("_")
             row, col, ox, oy, tw, th = int(row[1:]), int(col[1:]), int(ox[2:]), int(oy[2:]), int(tw[2:]), int(th[2:])
             
-            # Import keypoints from file (LFNet format)
+            # Import keypoints from file
             if local_feature == "LFNet":
                 np_desc_path = Path("{}.npz".format(tile))
                 abs_np_desc_path = desc_folder / np_desc_path
@@ -58,6 +58,33 @@ def rearrangeKpts(  img1,
                 desc = np.load(abs_np_dsc_path)
                 kp_numb = kp.shape[0]
                 total_numb_kpts += kp_numb
+                
+            elif local_feature == "photomatch":
+
+                if tile[-3:] == 'jpg':
+                    tile = tile[0:-3] + 'xml'
+                
+                tile_path = Path("{}".format(tile))
+                absolute_tile_path = r"{}/{}".format(desc_folder,tile_path)
+
+                fs = cv2.FileStorage(absolute_tile_path, cv2.FILE_STORAGE_READ)
+                kpFromXML = fs.getNode('keypoints')
+                kp_numb = kpFromXML.size()
+                total_numb_kpts += kp_numb
+                desc = fs.getNode('descriptors').mat()
+                kp = np.array([0, 0])
+                for i in range(0, kp_numb):
+                    x = kpFromXML.at(i).at(0).real()
+                    y = kpFromXML.at(i).at(1).real()
+                    kp = np.vstack((kp, np.array([x, y]))) #cv2.KeyPoint(x, y, 0, 0)
+                kp = kp[1:, :]
+                print('1 keypoint:  {}'.format(kpFromXML.at(0).at(0).real()), kpFromXML.at(0).at(1).real())
+                print('2 keypoint:  {}'.format(kpFromXML.at(1).at(0).real()), kpFromXML.at(1).at(1).real())
+                fs.release()
+                print("kp_numb", kp_numb)
+                print(kp)
+                print(desc)
+                print(type(desc))
 
             else:
                 print("Invalid local_feature parameter. Exit.")

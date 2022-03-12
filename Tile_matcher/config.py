@@ -1,14 +1,14 @@
 # Input/Output folders
-image_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\Trento_resized_JPG"
-desc_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\lfnet\lfnet_descriptor"
-colmap_desc_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\lfnet\colmap_desc"
-matches_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\lfnet\colmap_matches"
-tile_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\aerial_trento_tiles"
+image_folder = r"C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Tile_matcher\sample_project\imgs"
+desc_folder = r"C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Tile_matcher\sample_project\desc"
+colmap_desc_folder = r"C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Tile_matcher\sample_project\colmap_desc"
+matches_folder = r"C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Tile_matcher\sample_project\matches"
+tile_folder = r"C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Tile_matcher\sample_project\tiles"
 
 # Matching parameters
-local_feature = "KeyNet" # "LFNet" or "KeyNet"
+local_feature = "photomatch" # "LFNet" or "KeyNet" or "photomatch"
 cross_check = True
-check = 'without_Lowe_ratio_test'    # 'without_Lowe_ratio_test' or 'Lowe_ratio_test'
+check = 'Lowe_ratio_test'    # 'without_Lowe_ratio_test' or 'Lowe_ratio_test'
 matching_distance = 'L2'
 matching_strategy = 'intersection'
 ratio_thresh = 0.85
