@@ -1,8 +1,15 @@
-image_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\ai3d\imgs\all_imgs"
-desc_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\ai3d\KeyNetAffNetHardNet\desc"
-colmap_desc_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\ai3d\KeyNetAffNetHardNet\desc_colmap"
-matches_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\ai3d\KeyNetAffNetHardNet\matches"
-tile_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\ai3d\imgs\all_tiles"
-cross_check = True
+# Input/Output folders
+image_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\Trento_resized_JPG"
+desc_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\lfnet\lfnet_descriptor"
+colmap_desc_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\lfnet\colmap_desc"
+matches_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\lfnet\colmap_matches"
+tile_folder = r"C:\Users\User\Desktop\Luca\Projects\Aerial-images\aerial_trento\aerial_trento_tiles"
+
+# Matching parameters
 local_feature = "KeyNet" # "LFNet" or "KeyNet"
-pool_N = 4    # nuber of logical processors to be used - 1 or 4
+cross_check = True
+check = 'without_Lowe_ratio_test'    # 'without_Lowe_ratio_test' or 'Lowe_ratio_test'
+matching_distance = 'L2'
+matching_strategy = 'intersection'
+ratio_thresh = 0.85
+pool_N = 1                                          # nuber of logical processors to be used

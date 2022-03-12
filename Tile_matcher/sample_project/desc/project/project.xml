@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PhotoMatch version="1.0">
+    <General>
+        <Name>project</Name>
+        <ProjectFolder>C:/Users/Luscias/Desktop/3DOM/Github_3DOM/COLMAP_scripts/Tile_matcher/sample_project/desc/project</ProjectFolder>
+        <Description></Description>
+    </General>
+    <Images/>
+    <GroundTruth></GroundTruth>
+    <Sessions/>
+</PhotoMatch>

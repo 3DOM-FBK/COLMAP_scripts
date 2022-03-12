@@ -20,14 +20,13 @@ from config import matches_folder
 from config import tile_folder
 from config import cross_check
 from config import pool_N
-from config import local_feature
 
-global check
-check = 'without_Lowe_ratio_test'
-global matching_distance
-matching_distance = 'L2'
-global matching_strategy
-matching_strategy = 'intersection'
+from config import local_feature
+from config import check
+from config import matching_distance
+from config import matching_strategy
+from config import ratio_thresh
+
 global image_list
 image_list = os.listdir(image_folder)
 
