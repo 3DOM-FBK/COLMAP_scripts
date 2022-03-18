@@ -100,18 +100,18 @@ new_file.close()
 
 # Copy the camera orientation parameters leaving empty the row for the keypoint projections
 images_param_and_ori = [] # It will contain IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME for each image
-new_file = open('{}'.format(final_images), 'w')
+#new_file = open('{}'.format(final_images), 'w')
 with open('{}'.format(original_images), 'r') as lines:
     lines = lines.readlines()[4:]
     for c,line in enumerate(lines):
         if c%2 == 0:
-            new_file.write(line)
+            #new_file.write(line)
             line = line.strip()
             img_params = line.split(" ", 9)
             images_param_and_ori.append(img_params)
-        else:
-            new_file.write("\n")
-new_file.close()
+        #else:
+            #new_file.write("\n")
+#new_file.close()
 
 # Import camera models
 cameras = []
@@ -123,12 +123,39 @@ with open(final_cameras, "r") as camera_models:
 
 # Initialize a new database
 image_list = []
-for i in images_param_and_ori:
+new_file = open('{}'.format(final_images), 'w')
+for counter, i in enumerate(images_param_and_ori):
     IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME = i
     image_list.append(NAME)
+    NEW_IMAGE_ID = counter + 1
+    i = NEW_IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME
+    new_file.write("{} {} {} {} {} {} {} {} {} {}\n\n".format(NEW_IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME))
+new_file.close()
+
+
 image_dict, matches_cont = database.newDB(cameras, image_list, all_matches, config.projection_delimiter, images_param_and_ori, config.image_file_extension)
 if config.DEBUG == True and config.DEBUG_level == 3:
     quit()
+
+## EXPERIMENTAL
+##images_param_and_ori = []
+#reverse_image_dict = {v: k for k, v in image_dict.items()}
+#new_file = open('{}'.format(final_images), 'w')
+#for i in images_param_and_ori:
+#    IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME = i
+#    if 
+#        
+#with open('{}'.format(original_images), 'r') as lines:
+#    lines = lines.readlines()[4:]
+#    for c,line in enumerate(lines):
+#        if c%2 == 0:
+#            new_file.write(line)
+#            line = line.strip()
+#            img_params = line.split(" ", 9)
+#            #images_param_and_ori.append(img_params)
+#        else:
+#            new_file.write("\n")
+#new_file.close()
 
 # Initialize a new project.ini
 current_directory = os.getcwd()
