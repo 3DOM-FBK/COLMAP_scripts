@@ -8,12 +8,12 @@
 COLMAP_EXE_PATH = r"C:/Users/Luscias/Desktop/3DOM/COLMAP/COLMAP_3_6_windows" # Path to the COLMAP executable
 AlignCC_PATH = r"..\AlignCC_for_windows" # Path to the AlignCC_for_windows folder, this part is usefull if you want automatically compare your script using the Cloud Compare libraries
 #database_path = r".\input\colmap_sparse\database.db"
-image_folder = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_aerial_imgs\dortmund\imgs\img_jpg" # Path to the image folder used for running the sparse COLMAP reconstruction
-projection_folder = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_aerial_imgs\dortmund\target_projections_numericID"
-sparse_model_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_aerial_imgs\dortmund\KeyNetAffNetHardNet_OPENCV_BA4pix_withPP_mTL2_ransac0.2"
-ground_truth_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_aerial_imgs\dortmund\GCPs_coordinates_WGS84_UTM_32N_da_metashape_fabio_epsg32632.txt"
+image_folder = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\imgs_selection" # Path to the image folder used for running the sparse COLMAP reconstruction
+projection_folder = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\Elaboration\colmap_projections"
+sparse_model_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\rootsift_no_tiles_RADIAL_ransac4_mTL3_BA4pix"
+ground_truth_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\Elaboration\EUROSDR_ground_truth_translated.txt"
 
-image_file_extension = ".jpg"
+image_file_extension = ".JPG"
 projection_delimiter = ","
 image_reduction_factor = 1                      # 1500/6048 Ratio between the image resolution used in COLMAP and the image res targets were extracted
 image_translation_vector_X = 0                        # X and Y value must be the same
