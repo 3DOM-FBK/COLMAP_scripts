@@ -7,6 +7,7 @@ import os
 
 ### INPUT IMAGES
 image_set = []
+
 image_set = os.listdir(r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR_TIME\tiles") # Specifica le immagini
 
 ### INPUT FOLDERS
@@ -25,7 +26,7 @@ descriptor = 'D2Net' # 'D2Net' 'LFNet', 'ASLFeat', 'R2D2', 'KeyNet', 'SIFTopenCV
 matching = 'BruteForce'
 matching_distance = 'L2' # 'L2' or 'NORM_HAMMING'
 matching_strategy = 'intersection' # 'intersection' or 'union' or 'unidirectional'
-ratio_thresh_LRT = 1.00
+ratio_thresh_LRT = 0.85
 print_debug = False
 check = 'without_Lowe_ratio_test' # 'without_Lowe_ratio_test' or 'Lowe_ratio_test'
 nmatches = 100000
