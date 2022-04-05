@@ -7,27 +7,27 @@ import os
 
 ### INPUT IMAGES
 image_set = []
-image_set = os.listdir(r"C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Keypoints\RootSIFT_COLMAP\sample_project\imgs") # Specifica le immagini
+image_set = os.listdir(r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR_TIME\tiles") # Specifica le immagini
 
 ### INPUT FOLDERS
-desc_path_folder = r'C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Keypoints\RootSIFT_COLMAP\sample_project\desc'
-image_path_folder = r'C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Keypoints\RootSIFT_COLMAP\sample_project\imgs'
+desc_path_folder = r'C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR_TIME\desc_d2net'
+image_path_folder = r'C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR_TIME\tiles'
 gcp_path_folder = r'C:\Users\Luscias\Desktop\buttare\prova\empty'
 
 ### OUTPUT FOLDERS
-converted_desc_path_folder = r'C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Keypoints\RootSIFT_COLMAP\sample_project\colmap_desc'
-raw_matches_folder = r'C:\Users\Luscias\Desktop\3DOM\Github_3DOM\COLMAP_scripts\Keypoints\RootSIFT_COLMAP\sample_project\matches'
+converted_desc_path_folder = r'C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR_TIME\colmap_desc'
+raw_matches_folder = r'C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR_TIME\matches'
 
 ### OTHER OPTIONS
 res_factor = 1/1 #1500/6048 # Rapporto tra la larghezza dell'immagine usata in COLMAP e la larghezza dell'immagine su cui sono stati individuati i GCP
 gcp_bool = False
-descriptor = 'KeyNet' # 'D2Net' 'LFNet', 'ASLFeat', 'R2D2', 'KeyNet', 'SIFTopenCV', 'SuperPoint' or 'ORBopenCV' or 'PhotoMatch3DOM'
+descriptor = 'D2Net' # 'D2Net' 'LFNet', 'ASLFeat', 'R2D2', 'KeyNet', 'SIFTopenCV', 'SuperPoint' or 'ORBopenCV' or 'PhotoMatch3DOM'
 matching = 'BruteForce'
 matching_distance = 'L2' # 'L2' or 'NORM_HAMMING'
 matching_strategy = 'intersection' # 'intersection' or 'union' or 'unidirectional'
-ratio_thresh_LRT = 0.80
+ratio_thresh_LRT = 1.00
 print_debug = False
-check = 'Lowe_ratio_test' # 'without_Lowe_ratio_test' or 'Lowe_ratio_test'
+check = 'without_Lowe_ratio_test' # 'without_Lowe_ratio_test' or 'Lowe_ratio_test'
 nmatches = 100000
 crossCheck_bool = True
 n_kp_input_SIFT = 8000 # Only with 'descriptor flag' = 'SIFTopenCV'

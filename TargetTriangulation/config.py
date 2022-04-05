@@ -10,7 +10,7 @@ AlignCC_PATH = r"..\AlignCC_for_windows" # Path to the AlignCC_for_windows folde
 #database_path = r".\input\colmap_sparse\database.db"
 image_folder = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\imgs_selection" # Path to the image folder used for running the sparse COLMAP reconstruction
 projection_folder = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\Elaboration\colmap_projections"
-sparse_model_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\rootsift_no_tiles_RADIAL_ransac4_mTL3_BA4pix"
+sparse_model_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\KeyNet_RT0.95_OPENCV_ransac4_BA4_filtered1pix"
 ground_truth_path = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\Elaboration\EUROSDR_ground_truth_translated.txt"
 
 image_file_extension = ".JPG"

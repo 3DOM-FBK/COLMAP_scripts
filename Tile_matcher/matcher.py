@@ -15,6 +15,8 @@ from config import matching_strategy
 from config import ratio_thresh
 from config import pool_N
 from config import debug
+from config import max_kpts_per_tile
+from config import multhreading
 
 from lib import BruteForce
 
@@ -24,6 +26,40 @@ import numpy as np
 import json
 import os
 import cv2
+
+### D2Net
+def D2Net(img_name, desc_folder, N_kpts):
+    np_dsc_path = Path("{}.d2-net".format(img_name))
+    abs_np_dsc_path = desc_folder / np_dsc_path
+    
+    # Import D2Net keypoints and descriptors
+    with np.load(abs_np_dsc_path) as data:
+        d = dict(zip(("keypoints","scores","descriptors"), (data[k] for k in data)))
+    
+    kp = d['keypoints']
+    kp = kp[:N_kpts, :2]
+    kp_numb = kp.shape[0]
+    desc = d['descriptors']
+    desc = desc[:N_kpts, :]
+    
+    return kp, desc, kp_numb
+
+### RoRD
+def RoRD(img_name, desc_folder, N_kpts):
+    np_dsc_path = Path("{}.npy".format(img_name))
+    abs_np_dsc_path = desc_folder / np_dsc_path
+    
+    # Import D2Net keypoints and descriptors
+    with np.load(abs_np_dsc_path) as data:
+        d = dict(zip(("keypoints","scores","descriptors"), (data[k] for k in data)))
+    
+    kp = d['keypoints']
+    kp = kp[:N_kpts, :2]
+    kp_numb = kp.shape[0]
+    desc = d['descriptors']
+    desc = desc[:N_kpts, :]
+    
+    return kp, desc, kp_numb
 
 ### FUNCTION TO GENERATE ALL IMAGE PAIRS TO BE MATCHED
 def ImagePairs(matching_approach, image_list):
@@ -63,6 +99,9 @@ def Matcher(pair_range):
         img1_name = pair[0]
         img2_name = pair[1]
         
+        print("\n")
+        print("{} {}".format(img1_name, img2_name), end='\r')
+        print("\n")
         # Retrieving and joining local features from tiles
         if tiling == True:
             kpts_1, desc_1, kpts_numb_1 = rearrangeKpts(img1_name, image_folder, desc_folder, colmap_desc_folder, matches_folder, tile_folder, local_feature)
@@ -90,7 +129,48 @@ def Matcher(pair_range):
         
         
         elif tiling == False:
-             pass
+            if local_feature == "D2Net":
+                kpts_1, desc_1, kpts_numb_1 = D2Net(img1_name, desc_folder, max_kpts_per_tile)
+                kpts_2, desc_2, kpts_numb_2 = D2Net(img2_name, desc_folder, max_kpts_per_tile)
+
+            elif local_feature == "RoRD":
+                kpts_1, desc_1, kpts_numb_1 = RoRD(img1_name, desc_folder, max_kpts_per_tile)
+                kpts_2, desc_2, kpts_numb_2 = RoRD(img2_name, desc_folder, max_kpts_per_tile)
+            
+            else:
+                print("Other local features to be implemented ...")
+
+            ## Convert keypoints in openCV format
+            opencv_kpts_1 = []
+            for i in range (0,kpts_1.shape[0]):
+                opencv_kpts_1.append(cv2.KeyPoint(kpts_1[i][0],kpts_1[i][1],0,0))
+            opencv_kpts_2 = []
+            for i in range (0,kpts_2.shape[0]):
+                opencv_kpts_2.append(cv2.KeyPoint(kpts_2[i][0],kpts_2[i][1],0,0))
+            kpts_1 = opencv_kpts_1
+            kpts_2 = opencv_kpts_2
+
+            # Storing keypoints in a dictionary
+            if img1_name not in keypoints_dict.keys():
+                keypoints_dict[img1_name] = cv2.KeyPoint_convert(kpts_1)
+            if img2_name not in keypoints_dict.keys():
+                keypoints_dict[img2_name] = cv2.KeyPoint_convert(kpts_2)
+            print(keypoints_dict)
+
+            # Brute-force on the pair
+            opencv_matches = BruteForce.BrForce(desc_1, desc_2, check, matching_distance, cross_check, matching_strategy, print_debug=False, ratio_thresh=ratio_thresh)
+
+            # Storing matches
+            matches_matrix = np.zeros((len(opencv_matches), 2))
+
+            for l in range(0,len(opencv_matches)):
+                matches_matrix[l][0] = int(opencv_matches[l].queryIdx)
+                matches_matrix[l][1] = int(opencv_matches[l].trainIdx)
+                
+            matches_dict["{} {}".format(img1_name, img2_name)] = matches_matrix
+            iteration += 1
+            print("ITERATIONS:\t\t\t{}/{}".format(iteration, total_iterations))
+            
     
     return keypoints_dict, matches_dict
 
@@ -161,6 +241,21 @@ def rearrangeKpts(  img1,
                     kp = np.vstack((kp, np.array([x, y])))
                 kp = kp[1:, :]
                 fs.release()
+            
+            elif local_feature == "D2Net":
+                np_dsc_path = Path("{}.d2-net".format(tile))
+                abs_np_dsc_path = desc_folder / np_dsc_path
+
+                # Import D2Net keypoints and descriptors
+                with np.load(abs_np_dsc_path) as data:
+                    d = dict(zip(("keypoints","scores","descriptors"), (data[k] for k in data)))
+                
+                kp = d['keypoints']
+                kp = kp[:max_kpts_per_tile, :2]
+                kp_numb = kp.shape[0]
+                desc = d['descriptors']
+                desc = desc[:max_kpts_per_tile, :]
+                total_numb_kpts += kp_numb
 
 
             else:
@@ -208,19 +303,27 @@ if __name__ == "__main__":
     image_pairs_list = ImagePairs(matching_approach, image_list)
     if debug: print("matching_approach:\t", matching_approach), print("len(image_pairs_list):\t", len(image_pairs_list))
     
-    ### Matching all pairs with a multi threads approach
-    print("pool_N:\t", pool_N)
+    ### Matching pairs
+    # Matching all pairs with a multi threads approach
     image_pairs = np.array(image_pairs_list)
     pool_ranges = np.array_split(image_pairs, pool_N)
-
-    if debug:
-        print("Ranges for multi threads:")
-        for r in pool_ranges:
-            print(r.shape)
     
-    with Pool (pool_N) as p:
-        ris = p.map(Matcher, pool_ranges)  
+    print("\nMultithreading ranges:")
+    for r in pool_ranges:
+        print(r.shape)
+
+    if multhreading == True:
+        with Pool (pool_N) as p:
+            ris = p.map(Matcher, pool_ranges) 
+    
+    elif multhreading == False:
+        ris = Matcher(pool_ranges[0])
+        ris = [ris] # for compatibility with the multithreading approach
         
+    else:
+        print("Error! Multithreading must be True or False ...")
+        quit()
+    
     with open("{}/matches.txt".format(matches_folder), "w") as matches_file:
         for r in ris:
             for key in r[1]:

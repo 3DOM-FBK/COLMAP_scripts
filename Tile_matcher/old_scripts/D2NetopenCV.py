@@ -14,7 +14,7 @@ import os
 def D2NetopenCV(desc_path):
 
     np_desc_path = "{}.d2-net".format(desc_path)
-    # Import R2D2 keypoints and descriptors
+    # Import D2Net keypoints and descriptors
     with np.load(np_desc_path) as data:
         d = dict(zip(("keypoints","scores","descriptors"), (data[k] for k in data)))
     kp = d['keypoints']
