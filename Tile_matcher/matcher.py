@@ -4,7 +4,6 @@ from config import colmap_desc_folder
 from config import matches_folder
 from config import tile_folder
 from config import custom_pairs
-
 from config import tiling
 from config import matching_approach
 from config import local_feature
@@ -17,6 +16,9 @@ from config import pool_N
 from config import debug
 from config import max_kpts_per_tile
 from config import multhreading
+from config import imgs_list
+from config import torch_acceleration
+from config import match_mode
 
 from lib import BruteForce
 
@@ -26,13 +28,12 @@ import numpy as np
 import json
 import os
 import cv2
+import time
 
-### D2Net
 def D2Net(img_name, desc_folder, N_kpts):
     np_dsc_path = Path("{}.d2-net".format(img_name))
     abs_np_dsc_path = desc_folder / np_dsc_path
     
-    # Import D2Net keypoints and descriptors
     with np.load(abs_np_dsc_path) as data:
         d = dict(zip(("keypoints","scores","descriptors"), (data[k] for k in data)))
     
@@ -44,12 +45,10 @@ def D2Net(img_name, desc_folder, N_kpts):
     
     return kp, desc, kp_numb
 
-### RoRD
 def RoRD(img_name, desc_folder, N_kpts):
     np_dsc_path = Path("{}.npy".format(img_name))
     abs_np_dsc_path = desc_folder / np_dsc_path
     
-    # Import D2Net keypoints and descriptors
     with np.load(abs_np_dsc_path) as data:
         d = dict(zip(("keypoints","scores","descriptors"), (data[k] for k in data)))
     
@@ -60,6 +59,35 @@ def RoRD(img_name, desc_folder, N_kpts):
     desc = desc[:N_kpts, :]
     
     return kp, desc, kp_numb
+
+def KeyNet(img_name, desc_folder, N_kpts):
+    np_kpt_path = Path("{}.kpt.npy".format(img_name))
+    abs_np_kpt_path = desc_folder / np_kpt_path
+    np_dsc_path = Path("{}.dsc.npy".format(img_name))
+    abs_np_dsc_path = desc_folder / np_dsc_path
+    
+    kp = np.load(abs_np_kpt_path)
+    desc = np.load(abs_np_dsc_path)
+    kp_numb = kp.shape[0]
+    
+    return kp, desc, kp_numb
+
+def LFNet(img_name, desc_folder, N_kpts):
+    np_dsc_path = Path("{}.npz".format(img_name))
+    abs_np_dsc_path = desc_folder / np_dsc_path
+    
+    with np.load(abs_np_dsc_path) as data:
+        d = dict(zip(("keypoints","descriptors","resolution","scale","orientation"), (data[k] for k in data)))
+    
+    kp = d['keypoints']
+    kp = kp[:N_kpts, :2]
+    kp_numb = kp.shape[0]
+    desc = d['descriptors']
+    desc = desc[:N_kpts, :]
+    
+    return kp, desc, kp_numb
+
+
 
 ### FUNCTION TO GENERATE ALL IMAGE PAIRS TO BE MATCHED
 def ImagePairs(matching_approach, image_list):
@@ -114,18 +142,30 @@ def Matcher(pair_range):
                 keypoints_dict[img2_name] = cv2.KeyPoint_convert(kpts_2)
             
             # Brute-force on the pair
-            opencv_matches = BruteForce.BrForce(desc_1, desc_2, check, matching_distance, cross_check, matching_strategy, print_debug=False, ratio_thresh=ratio_thresh)
-            
-            # Storing matches
-            matches_matrix = np.zeros((len(opencv_matches), 2))
+            if torch_acceleration == "torch":
+                torch_desc_1 = torch.from_numpy(desc_1)
+                torch_desc_2 = torch.from_numpy(desc_2)
+                matcher = feature.DescriptorMatcher(match_mode=match_mode, th=ratio_thresh)
+                if debug: print(match_mode, ratio_thresh)
+                match_distances, matches_matrix = matcher.forward(torch_desc_1, torch_desc_2)
 
-            for l in range(0,len(opencv_matches)):
-                matches_matrix[l][0] = int(opencv_matches[l].queryIdx)
-                matches_matrix[l][1] = int(opencv_matches[l].trainIdx)
-                
+            elif torch_acceleration == "my_matcher":
+                opencv_matches = BruteForce.BrForce(desc_1, desc_2, check, matching_distance, cross_check, matching_strategy, print_debug=False, ratio_thresh=ratio_thresh)
+                # Storing matches
+                matches_matrix = np.zeros((len(opencv_matches), 2))
+
+                for l in range(0,len(opencv_matches)):
+                    matches_matrix[l][0] = int(opencv_matches[l].queryIdx)
+                    matches_matrix[l][1] = int(opencv_matches[l].trainIdx)
+            
+            else:
+                print("Error! Choose a valid matcher. Exit.")
+                quit()
+
+   
             matches_dict["{} {}".format(img1_name, img2_name)] = matches_matrix
             iteration += 1
-            print("ITERATIONS:\t\t\t{}/{}".format(iteration, total_iterations))
+            print("ITERATIONS:\t\t\t{}/{}".format(iteration,total_iterations))
         
         
         elif tiling == False:
@@ -136,6 +176,14 @@ def Matcher(pair_range):
             elif local_feature == "RoRD":
                 kpts_1, desc_1, kpts_numb_1 = RoRD(img1_name, desc_folder, max_kpts_per_tile)
                 kpts_2, desc_2, kpts_numb_2 = RoRD(img2_name, desc_folder, max_kpts_per_tile)
+
+            elif local_feature == "KeyNet":
+                kpts_1, desc_1, kpts_numb_1 = KeyNet(img1_name, desc_folder, max_kpts_per_tile)
+                kpts_2, desc_2, kpts_numb_2 = KeyNet(img2_name, desc_folder, max_kpts_per_tile)
+
+            elif local_feature == "LFNet":
+                kpts_1, desc_1, kpts_numb_1 = LFNet(img1_name, desc_folder, max_kpts_per_tile)
+                kpts_2, desc_2, kpts_numb_2 = LFNet(img2_name, desc_folder, max_kpts_per_tile)
             
             else:
                 print("Other local features to be implemented ...")
@@ -155,7 +203,8 @@ def Matcher(pair_range):
                 keypoints_dict[img1_name] = cv2.KeyPoint_convert(kpts_1)
             if img2_name not in keypoints_dict.keys():
                 keypoints_dict[img2_name] = cv2.KeyPoint_convert(kpts_2)
-            print(keypoints_dict)
+            if debug == True:
+                print(keypoints_dict)
 
             # Brute-force on the pair
             opencv_matches = BruteForce.BrForce(desc_1, desc_2, check, matching_distance, cross_check, matching_strategy, print_debug=False, ratio_thresh=ratio_thresh)
@@ -293,11 +342,23 @@ def rearrangeKpts(  img1,
     
     return opencv_keypoints, image_desc, total_numb_kpts
 
+
+######################################################################
 ### MAIN STARTS HERE
 if __name__ == "__main__":
+
+    start = time.time()
+    userI = input("\nDo you want to continue? y/n\n")
+    if userI != "y":
+        quit()
+
+    if torch_acceleration == "torch":
+        import torch
+        from kornia import feature
     
-    image_list = os.listdir(image_folder)
-    
+    #image_list = os.listdir(image_folder)
+    image_list = imgs_list
+
     ### Generate image pairs according to the matching_approach
     print("\nGenerating image pairs according to the matching_approach '{}' ...".format(matching_approach))
     image_pairs_list = ImagePairs(matching_approach, image_list)
@@ -338,5 +399,9 @@ if __name__ == "__main__":
                 kps_file.write('{} 128\n'.format(len(r[0][key])))
                 for k in range(0,len(r[0][key])):
                     kps_file.write("{:.6f} {:.6f} 0.000000 0.000000\n".format(r[0][key][k][0],r[0][key][k][1]))
+
+    end = time.time()
+    elapsed_time = end - start
+    print("elapsed_time: {} sec".format(elapsed_time))
 
 

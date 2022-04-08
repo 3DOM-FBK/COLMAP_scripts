@@ -21,19 +21,20 @@ def ExportCameras(external_cameras_path):
         for line in file:
             k = k+1
             line = line[:-1]
-            first_elem, waste = line.split(' ', 1)
-            if first_elem == "#":
-                print(first_elem)
-            elif k%2 != 0:
-                image_id, qw, qx, qy, qz, tx, ty, tz, camera_id, name = line.split(" ", 9)
-                q = np.array([float(qw), float(qx), float(qy), float(qz)])
-                t = np.array([[float(tx)],[float(ty)],[float(tz)]])
-                q_matrix = quaternion.Quaternion(q).transformation_matrix
-                q_matrix = q_matrix[0:3,0:3]
-                camera_location = np.dot(-q_matrix.transpose(),t)
-                n_images = n_images + 1
-                camera_direction = np.dot(q_matrix.transpose(),np.array([[0],[0],[1]]))#*-1
-                lines.append('{} {} {} {} {} {} {} 50 {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}'.format(
+            try:
+                first_elem, waste = line.split(' ', 1)
+                if first_elem == "#":
+                    print(first_elem)
+                elif k%2 != 0:
+                    image_id, qw, qx, qy, qz, tx, ty, tz, camera_id, name = line.split(" ", 9)
+                    q = np.array([float(qw), float(qx), float(qy), float(qz)])
+                    t = np.array([[float(tx)],[float(ty)],[float(tz)]])
+                    q_matrix = quaternion.Quaternion(q).transformation_matrix
+                    q_matrix = q_matrix[0:3,0:3]
+                    camera_location = np.dot(-q_matrix.transpose(),t)
+                    n_images = n_images + 1
+                    camera_direction = np.dot(q_matrix.transpose(),np.array([[0],[0],[1]]))#*-1
+                    lines.append('{} {} {} {} {} {} {} 50 {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}'.format(
                                                 name,
                                                 camera_location[0,0],
                                                 camera_location[1,0],
@@ -58,6 +59,9 @@ def ExportCameras(external_cameras_path):
                                                 "0",
                                                 "1"
                                                 ))
+        
+            except:
+                print("Empty line")
     return lines
     
 def main():
