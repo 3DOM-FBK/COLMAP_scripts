@@ -64,5 +64,7 @@ print("ratio_thresh\t\t\t", ratio_thresh)
 print("pool_N\t\t\t\t", pool_N)
 print("debug\t\t\t\t", debug)
 
-
+#userI = input("\nDo you want to continue? y/n\n")
+#if userI != "y":
+#    quit()
 
