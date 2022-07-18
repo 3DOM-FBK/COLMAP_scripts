@@ -235,6 +235,10 @@ def rearrangeKpts(  img1,
     image_list = os.listdir(image_folder)
     tile_list = os.listdir(tile_folder)
     desc_list = os.listdir(desc_folder)
+
+    image_list = sorted(image_list)
+    tile_list = sorted(tile_list)
+    desc_list = sorted(desc_list)
     
     # Rearrange keypoints coordinates and descriptors to obtain an unique file for each image
     total_numb_kpts = 0

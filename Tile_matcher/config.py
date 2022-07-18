@@ -6,28 +6,28 @@
 import os
 
 # Input/Output folders
-image_folder = r".\sample_project\imgs"
-desc_folder = r".\sample_project\desc"
-colmap_desc_folder = r".\sample_project\colmap_desc"
-matches_folder = r".\sample_project\matches"
-tile_folder = r".\sample_project\tiles"
+image_folder = r"C:\Users\User\Desktop\Luca\GitProjects\Github_3DOM\COLMAP_scripts\Keypoints\KeyNetAffNetHardNet\prova"
+desc_folder = r"C:\Users\User\Desktop\Luca\GitProjects\Github_3DOM\COLMAP_scripts\Keypoints\KeyNetAffNetHardNet\all_desc"
+colmap_desc_folder = r"C:\Users\User\Desktop\Luca\GitProjects\Github_3DOM\COLMAP_scripts\Keypoints\KeyNetAffNetHardNet\colmap_desc"
+matches_folder = r"C:\Users\User\Desktop\Luca\GitProjects\Github_3DOM\COLMAP_scripts\Keypoints\KeyNetAffNetHardNet\matches"
+tile_folder = r"C:\Users\User\Desktop\Luca\GitProjects\Github_3DOM\COLMAP_scripts\Keypoints\KeyNetAffNetHardNet\tiles"
 custom_pairs = r"C:\Users\Luscias\Desktop\3DOM\ISPRS2022_EUROSDR\SceneViews.json"
 
 # Matching parameters
-torch_acceleration = "torch" # "torch" or "my_matcher"
+torch_acceleration = "my_matcher" # "torch" or "my_matcher"
 match_mode = 'smnn' # works only for torch_acceleration
-multhreading = False # if False, pool_N must be 1
-tiling = True
-max_kpts_per_tile = 8000
+multhreading = True # if False, pool_N must be 1
+tiling = False
+max_kpts_per_tile = 15000
 matching_approach = "exhaustive" # "exhaustive" or "custom"
-local_feature = "photomatch" # "LFNet", "KeyNet", "photomatch", "RootSIFT", "RoRD" or "D2Net"
+local_feature = "KeyNet" # "LFNet", "KeyNet", "photomatch", "RootSIFT", "RoRD" or "D2Net"
 cross_check = True
 check = 'Lowe_ratio_test'    # 'without_Lowe_ratio_test' or 'Lowe_ratio_test'
 matching_distance = 'L2'
 matching_strategy = 'intersection'
-ratio_thresh = 0.90
-pool_N = 1                                          # nuber of logical processors to be used
-debug = True
+ratio_thresh = 0.85
+pool_N = 10                                          # nuber of logical processors to be used
+debug = False
 extention_list = ['jpg', 'JPG']
 
 # Print settings
@@ -35,6 +35,7 @@ imgs_list = []
 for item in os.listdir(image_folder):
     if item[-3:] in extention_list:
         imgs_list.append(item)
+imgs_list = sorted(imgs_list)
 if imgs_list == None:
     print("Empty folders or image extantion not in extention_list"), print("Exit")
     quit()
