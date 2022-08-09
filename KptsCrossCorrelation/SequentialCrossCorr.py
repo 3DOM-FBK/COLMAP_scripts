@@ -224,12 +224,13 @@ def Tracking(tentative_kpts, img_folder, img_dict, patch_width, patch_hight, sil
         current_image = kp[0]
         current_id = img_dict_reverse[current_image]
         #print(current_image, current_id)
-        candidate_images = [i % len(img_dict.keys()) for i in range(current_id-2, current_id+3)] # 2 imgs forward, 2 backward
-        #candidate_images = [i % len(img_dict.keys()) for i in range(current_id-1, current_id+2)] # 1 imgs forward, 1 backward
+        #candidate_images = [i % len(img_dict.keys()) for i in range(current_id-2, current_id+3)] # 2 imgs forward, 2 backward
+        candidate_images = [i % len(img_dict.keys()) for i in range(current_id-1, current_id+2)] # 1 imgs forward, 1 backward
         candidate_images.pop(len(candidate_images)//2)
+        print("Current id and current image: {} {}".format(current_id, current_image))
         print(candidate_images)
+        print([img_dict[im_id] for im_id in candidate_images])
         
-
         for c in candidate_images:
             target_im = img_dict[c]
             x, y = SequentialCrossCorrelation(kp, target_im, img_folder, patch_width, patch_hight, silent)

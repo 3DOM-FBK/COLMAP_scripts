@@ -10,7 +10,7 @@ from PIL import Image, ImageChops, ImageDraw
 from scipy import signal, ndimage
 
 
-PIX_BUFFER = 70
+PIX_BUFFER = 70 # 70 used for the plastic bottle
 
 
 def conv_laplacian(image):
